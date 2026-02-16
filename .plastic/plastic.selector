@@ -1,0 +1,4 @@
+repository "TCG_pruebas1/TCG_pruebas1@4672970685127@cloud"
+  path "/"
+    br "/main"
+    co "/main"
