@@ -1,21 +1,33 @@
 using UnityEngine;
+using System.Collections.Generic; // Necesario para usar List<>
 
-[CreateAssetMenu(fileName = "NuevaCarta", menuName = "TCG/Carta")]
+[CreateAssetMenu(fileName = "NewCard", menuName = "TCG/Card")]
 public class CardData : ScriptableObject
 {
-    [Header("Info Básica")]
+    [Header("Basic Info")]
     public string id;
-    public string nombreCarta;
-    [TextArea(3, 10)] public string descripcion;
-    public Sprite arte; // La imagen
+    public string cardName;
+    [TextArea] public string description;
+    public Sprite art;
 
-    [Header("Estadísticas Base")]
-    public int costo;
-    public int pdBase; // Poder (Ataque)
-    public int psBase; // Salud (Vida)
+    [Header("Base Stats")]
+    public int cost;
+    public int basePd; // Attack
+    public int basePs; // Health
 
-    [Header("Tipos")]
-    public string tipo; // Espiritu, Ritual, etc.
-    public string arquetipo; // Monje, Guerrero...
-    public string elemento; // Agua, Fuego...
+    [Header("Types")]
+    public string type;       // Ej. "Water"
+    public string archetype;  // Ej. "Monk"
+    public string element;    // Ej. "Ice"
+
+    [Header("--- PASSIVE STATES ---")]
+    [Tooltip("Estados que la carta tiene SIEMPRE mientras viva (Monje, Recuperación)")]
+    public List<StateData> passiveStates; 
+
+    [Header("--- INSTANT TRIGGERS ---")]
+    [Tooltip("Cosas que pasan UNA vez al entrar")]
+    public List<EffectData> onSummonEffects; 
+
+    [Tooltip("Cosas que pasan UNA vez al morir")]
+    public List<EffectData> onDeathEffects;
 }
