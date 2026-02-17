@@ -15,5 +15,28 @@ MonoBehaviour:
   elementIcons:
   - elementName: Water
     icon: {fileID: 21300000, guid: 0eb0b73c99530b64a992eedc45aa87c4, type: 3}
+  - elementName: Fire
+    icon: {fileID: 21300000, guid: 5104e81a8c98d7b4e97cadaaf08f4580, type: 3}
+  - elementName: Wind
+    icon: {fileID: 21300000, guid: 8ac9a82450522f748b0ba66855918aa9, type: 3}
+  - elementName: Earth
+    icon: {fileID: 21300000, guid: c523f3d9429562740a920fb6f4dc4122, type: 3}
   iconOnSummon: {fileID: 21300000, guid: 0427813806c7fb4429af99b54c71081a, type: 3}
   iconOnDeath: {fileID: 21300000, guid: 83ac70b6dcb297a4ba9b167666feae05, type: 3}
+  costIcons:
+  - type: 3
+    icon: {fileID: 21300000, guid: 0eb0b73c99530b64a992eedc45aa87c4, type: 3}
+  - type: 4
+    icon: {fileID: 21300000, guid: 5104e81a8c98d7b4e97cadaaf08f4580, type: 3}
+  - type: 5
+    icon: {fileID: 21300000, guid: c523f3d9429562740a920fb6f4dc4122, type: 3}
+  - type: 6
+    icon: {fileID: 21300000, guid: 8ac9a82450522f748b0ba66855918aa9, type: 3}
+  - type: 2
+    icon: {fileID: 21300000, guid: beeb502338f02c540804ab73a90de4fb, type: 3}
+  - type: 0
+    icon: {fileID: 21300000, guid: 014e061e12b378e46a99d50cb74b583f, type: 3}
+  - type: 1
+    icon: {fileID: 21300000, guid: 14e23cb56b8f9b840859fbcd1619f0fa, type: 3}
+  - type: 7
+    icon: {fileID: 21300000, guid: 40111ffac246dac4da37a4f6e623e6de, type: 3}

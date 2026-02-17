@@ -67,5 +67,5 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "TCG_Unity.slnx"
+    "dotnet.defaultSolution": "TCG_pruebas1.slnx"
 }

@@ -13,22 +13,22 @@ MonoBehaviour:
   m_Name: MonjeBruma
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   id: 01
-  cardName: Monje de la Burma
-  description: 'monje:
+  cardName: Monje de la Bruma
+  description: '<color="yellow"><b>Monje</b></color>
 
-    genera un elemento de agua al inicio de tu turno si esta
-    en el campo'
+    genera un <color="yellow"><b>Sello</b></color>
+    de <color="blue">Agua</color> al inicio de tu turno si esta en el campo'
   art: {fileID: 21300000, guid: 4239b35c6deb0344c9defa12d4c544c6, type: 3}
-  cost: 1
   basePd: 1000
   basePs: 1200
-  type: water
+  type: Spirit
   archetype: Monje
-  element: water
+  element: Water
+  costs:
+  - type: 2
+    amount: 1
   passiveStates:
   - {fileID: 11400000, guid: 31270b7a69dee5f4fa0c95fa5ce517dc, type: 2}
-  - {fileID: 11400000, guid: 31270b7a69dee5f4fa0c95fa5ce517dc, type: 2}
-  onSummonEffects:
-  - {fileID: 11400000, guid: a4919c8eedd1c124f9b472dd4fe036f4, type: 2}
+  onSummonEffects: []
   onDeathEffects:
   - {fileID: 11400000, guid: 6f7c01561910a17468290c13ebc12664, type: 2}

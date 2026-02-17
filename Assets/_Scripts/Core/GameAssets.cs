@@ -1,46 +1,96 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-// Este script es tu biblioteca gráfica central.
-// Aquí defines qué sprite corresponde a qué nombre.
+// --- 1. DEFINICIÓN DE TIPOS DE COSTO (Global) ---
+// Definimos esto fuera de la clase para que cualquier script (como CardData) pueda usar "CostType".
+public enum CostType
+{
+    RitualMana,   // El recurso morado/oscuro para Rituales
+    SoulMana,     // El recurso etéreo para Almas
+    Level,        // Las estrellas o niveles para Espíritus
+    WaterSeal,    // Sello de Agua (Costo para Voluntad)
+    FireSeal,     // Sello de Fuego
+    EarthSeal,    // Sello de Tierra
+    WindSeal,     // Sello de Viento
+    VoidSeal,     // Sello de Vacío
+    GenericMana   // (Opcional) Por si acaso
+}
+
 [CreateAssetMenu(menuName = "TCG/System/Game Assets Database")]
 public class GameAssets : ScriptableObject
 {
-    // Singleton súper simple para acceder desde cualquier lado
+    // --- 2. SINGLETON (Acceso desde cualquier lado) ---
     private static GameAssets _instance;
-    public static GameAssets i 
+    public static GameAssets i
     {
-        get {
+        get
+        {
             if (_instance == null) _instance = Resources.Load<GameAssets>("GameAssetsDatabase");
             return _instance;
         }
     }
 
+    // --- 3. ICONOS DE ELEMENTOS (Arquetipos/Visuales) ---
     [Header("Iconos de Elementos")]
-    // Usamos una lista de pares para simular un diccionario visible en el inspector
+    [Tooltip("Mapeo de nombres (string) a iconos. Ej: 'Water' -> Sello Azul")]
     [SerializeField] private List<ElementMapping> elementIcons;
 
+    // --- 4. ICONOS DE TRIGGERS (Efectos) ---
     [Header("Iconos de Triggers")]
-    public Sprite iconOnSummon; // Flecha hacia abajo, entrada, etc.
+    public Sprite iconOnSummon; // Flecha entrando, etc.
     public Sprite iconOnDeath;  // Calavera, tumba, etc.
 
-    // Función para buscar el sprite por nombre
+    // --- 5. ICONOS DE COSTOS (Economía) ---
+    [Header("Iconos de Costos")]
+    [Tooltip("Mapeo del tipo de costo (Enum) a su icono correspondiente.")]
+    [SerializeField] private List<CostIconMapping> costIcons;
+
+
+    // ================= FUNCIONES DE BÚSQUEDA =================
+
+    // Función A: Buscar Sprite de Elemento (por nombre texto)
     public Sprite GetElementSprite(string elementName)
     {
+        // Si el string viene vacío o nulo, regresamos null sin error
+        if (string.IsNullOrEmpty(elementName)) return null;
+
         foreach (var mapping in elementIcons)
         {
             if (mapping.elementName.ToLower() == elementName.ToLower())
                 return mapping.icon;
         }
-        Debug.LogWarning($"No se encontró icono para el elemento: {elementName}");
-        return null; // O devuelve un sprite de "interrogación" por defecto
+        
+        Debug.LogWarning($"[GameAssets] No se encontró icono para el elemento llamado: {elementName}");
+        return null;
     }
 
-    // Clase auxiliar para el mapeo en el inspector
+    // Función B: Buscar Sprite de Costo (por tipo Enum)
+    public Sprite GetCostIcon(CostType type)
+    {
+        foreach (var mapping in costIcons)
+        {
+            if (mapping.type == type)
+                return mapping.icon;
+        }
+
+        Debug.LogWarning($"[GameAssets] FALTANTE: No has asignado icono para el costo tipo: {type}");
+        return null;
+    }
+
+
+    // ================= CLASES AUXILIARES (STRUCTS) =================
+
     [System.Serializable]
     public class ElementMapping
     {
         public string elementName; // Ej: "Water"
-        public Sprite icon;        // El sprite del sello azul
+        public Sprite icon;        // El sprite del sello
+    }
+
+    [System.Serializable]
+    public struct CostIconMapping
+    {
+        public CostType type;      // Ej: CostType.RitualMana
+        public Sprite icon;        // El sprite del orbe morado
     }
 }

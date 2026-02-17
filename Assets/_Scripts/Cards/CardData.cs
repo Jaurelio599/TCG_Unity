@@ -11,7 +11,6 @@ public class CardData : ScriptableObject
     public Sprite art;
 
     [Header("Base Stats")]
-    public int cost;
     public int basePd; // Attack
     public int basePs; // Health
 
@@ -19,6 +18,11 @@ public class CardData : ScriptableObject
     public string type;       // Ej. "Water"
     public string archetype;  // Ej. "Monk"
     public string element;    // Ej. "Ice"
+
+    [Header("Cost & Requirements")]
+    // Antes era: public int cost;
+    // AHORA ES UNA LISTA:
+    public List<CardCost> costs;
 
     [Header("--- PASSIVE STATES ---")]
     [Tooltip("Estados que la carta tiene SIEMPRE mientras viva (Monje, Recuperación)")]

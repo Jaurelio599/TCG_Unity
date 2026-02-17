@@ -14,7 +14,6 @@ public class CardDisplay : MonoBehaviour
     public TMP_Text descriptionText;
     public TMP_Text pdText;
     public TMP_Text psText;
-    public TMP_Text costText;
 
     [Header("New UI References")]
     public Image elementIconSlot;
@@ -31,7 +30,11 @@ public class CardDisplay : MonoBehaviour
     // Variables internas
     private int currentPd;
     private int currentPs;
-    private int currentCost;
+    [Header("Cost UI")]
+    public Transform costContainer;   // El objeto en la esquina superior derecha
+    public GameObject costPrefab;     // Un prefab simple: Icono + Texto (ej. Gota de agua + "1")
+
+    // ... (resto de variables) ... 
 
     void Start()
     {
@@ -44,9 +47,8 @@ public class CardDisplay : MonoBehaviour
 
     void LoadCardData()
     {
-        currentPd = originalData.basePd;
-        currentPs = originalData.basePs;
-        currentCost = originalData.cost;
+    currentPd = originalData.basePd;
+    currentPs = originalData.basePs;
     }
 
     public void UpdateUI()
@@ -56,9 +58,7 @@ public class CardDisplay : MonoBehaviour
         if (descriptionText) descriptionText.text = originalData.description;
         if (pdText) pdText.text = currentPd.ToString();
         if (psText) psText.text = currentPs.ToString();
-        if (costText) costText.text = currentCost.ToString();
-        if (archetypeText) archetypeText.text = originalData.archetype;
-        
+        if (archetypeText) archetypeText.text = originalData.archetype;     
         if (artImage && originalData.art) artImage.sprite = originalData.art;
 
         // 2. Icono del Elemento
@@ -82,6 +82,48 @@ public class CardDisplay : MonoBehaviour
         {
             FillEffectIndicators(bottomEffectsContainer, originalData.onSummonEffects, GameAssets.i.iconOnSummon);
             FillEffectIndicators(bottomEffectsContainer, originalData.onDeathEffects, GameAssets.i.iconOnDeath);
+        }
+
+        if (costContainer != null && costPrefab != null)
+        {
+            // 1. Limpiar lo viejo
+            foreach (Transform child in costContainer) Destroy(child.gameObject);
+
+            // 2. Pintar los nuevos costos
+            foreach (var cost in originalData.costs)
+            {
+                // ... dentro del bucle foreach (var cost in originalData.costs) ...
+
+                        GameObject newCost = Instantiate(costPrefab, costContainer);
+                        
+                        // 1. Buscamos la Imagen en el objeto principal (o en los hijos, por si acaso)
+                        Image iconImg = newCost.GetComponent<Image>();
+                        if (iconImg == null) iconImg = newCost.GetComponentInChildren<Image>();
+
+                        // 2. SOLUCIÓN AL ERROR:
+                        // En lugar de obligar a que sea el "Hijo 0" (.GetChild(0)),
+                        // le decimos: "Busca cualquier componente de Texto que tengas dentro".
+                        TMP_Text amountTxt = newCost.GetComponentInChildren<TMP_Text>();
+
+                        // Asignar Icono
+                        if (iconImg != null && GameAssets.i != null)
+                        {
+                            iconImg.sprite = GameAssets.i.GetCostIcon(cost.type);
+                            // Truco: Si sale un cuadrado blanco, esto asegura que se vea el sprite
+                            iconImg.color = Color.white; 
+                        }
+
+                        // Asignar Texto
+                        if (amountTxt != null)
+                        {
+                            amountTxt.text = cost.amount.ToString();
+                        }
+                        else 
+                        {
+                            // Esto nos avisará en consola si el prefab realmente no tiene texto
+                            Debug.LogWarning("El Prefab de Costo NO tiene ningún componente TextMeshPro dentro.");
+                        }
+            }
         }
     }
 
@@ -135,8 +177,8 @@ public class CardDisplay : MonoBehaviour
 
                 // Obtenemos los componentes de forma segura
                 var triggerImg = indicator.transform.GetChild(0).GetComponent<Image>();
-                var amountTxt = indicator.transform.GetChild(1).GetComponent<TMP_Text>();
-                var sealImg = indicator.transform.GetChild(2).GetComponent<Image>();
+                var sealImg = indicator.transform.GetChild(1).GetComponent<Image>();
+                var amountTxt = indicator.transform.GetChild(2).GetComponent<TMP_Text>();
 
                 // Asignamos datos SOLO si el componente existe
                 if (triggerImg != null) triggerImg.sprite = triggerIcon;
