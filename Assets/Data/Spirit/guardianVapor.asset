@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a74c5089a37bd054a92063ae81a2b8e2, type: 3}
+  m_Name: guardianVapor
+  m_EditorClassIdentifier: Assembly-CSharp::CardData
+  id: sp001Gp
+  cardName: "Guardi\xE1n Del Vapor"
+  description: 
+  art: {fileID: 21300000, guid: 46396f827524dd24c9d6dd9917cdd5d6, type: 3}
+  basePd: 1500
+  basePs: 2000
+  type: Water
+  archetype: Vapor
+  element: Water
+  costs:
+  - type: 2
+    amount: 2
+  passiveStates:
+  - {fileID: 11400000, guid: 31270b7a69dee5f4fa0c95fa5ce517dc, type: 2}
+  onSummonEffects:
+  - {fileID: 11400000, guid: a4919c8eedd1c124f9b472dd4fe036f4, type: 2}
+  onDeathEffects:
+  - {fileID: 11400000, guid: 6f7c01561910a17468290c13ebc12664, type: 2}

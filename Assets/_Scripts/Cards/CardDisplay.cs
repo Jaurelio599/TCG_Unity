@@ -34,8 +34,6 @@ public class CardDisplay : MonoBehaviour
     public Transform costContainer;   // El objeto en la esquina superior derecha
     public GameObject costPrefab;     // Un prefab simple: Icono + Texto (ej. Gota de agua + "1")
 
-    // ... (resto de variables) ... 
-
     void Start()
     {
         if (originalData != null)
@@ -45,14 +43,19 @@ public class CardDisplay : MonoBehaviour
         }
     }
 
-    void LoadCardData()
+    public void LoadCardData()
     {
-    currentPd = originalData.basePd;
-    currentPs = originalData.basePs;
+        if (originalData != null)
+        {
+            currentPd = originalData.basePd;
+            currentPs = originalData.basePs;
+        }
     }
 
     public void UpdateUI()
     {
+        if (originalData == null) return;
+
         // 1. Textos básicos y Arte (Con chequeos de seguridad)
         if (nameText) nameText.text = originalData.cardName;
         if (descriptionText) descriptionText.text = originalData.description;
@@ -84,6 +87,7 @@ public class CardDisplay : MonoBehaviour
             FillEffectIndicators(bottomEffectsContainer, originalData.onDeathEffects, GameAssets.i.iconOnDeath);
         }
 
+        // 5. Costos
         if (costContainer != null && costPrefab != null)
         {
             // 1. Limpiar lo viejo
@@ -92,37 +96,27 @@ public class CardDisplay : MonoBehaviour
             // 2. Pintar los nuevos costos
             foreach (var cost in originalData.costs)
             {
-                // ... dentro del bucle foreach (var cost in originalData.costs) ...
+                GameObject newCost = Instantiate(costPrefab, costContainer);
+                
+                // 1. Buscamos la Imagen en el objeto principal (o en los hijos, por si acaso)
+                Image iconImg = newCost.GetComponent<Image>();
+                if (iconImg == null) iconImg = newCost.GetComponentInChildren<Image>();
 
-                        GameObject newCost = Instantiate(costPrefab, costContainer);
-                        
-                        // 1. Buscamos la Imagen en el objeto principal (o en los hijos, por si acaso)
-                        Image iconImg = newCost.GetComponent<Image>();
-                        if (iconImg == null) iconImg = newCost.GetComponentInChildren<Image>();
+                // 2. Buscamos el texto
+                TMP_Text amountTxt = newCost.GetComponentInChildren<TMP_Text>();
 
-                        // 2. SOLUCIÓN AL ERROR:
-                        // En lugar de obligar a que sea el "Hijo 0" (.GetChild(0)),
-                        // le decimos: "Busca cualquier componente de Texto que tengas dentro".
-                        TMP_Text amountTxt = newCost.GetComponentInChildren<TMP_Text>();
+                // Asignar Icono
+                if (iconImg != null && GameAssets.i != null)
+                {
+                    iconImg.sprite = GameAssets.i.GetCostIcon(cost.type);
+                    iconImg.color = Color.white; 
+                }
 
-                        // Asignar Icono
-                        if (iconImg != null && GameAssets.i != null)
-                        {
-                            iconImg.sprite = GameAssets.i.GetCostIcon(cost.type);
-                            // Truco: Si sale un cuadrado blanco, esto asegura que se vea el sprite
-                            iconImg.color = Color.white; 
-                        }
-
-                        // Asignar Texto
-                        if (amountTxt != null)
-                        {
-                            amountTxt.text = cost.amount.ToString();
-                        }
-                        else 
-                        {
-                            // Esto nos avisará en consola si el prefab realmente no tiene texto
-                            Debug.LogWarning("El Prefab de Costo NO tiene ningún componente TextMeshPro dentro.");
-                        }
+                // Asignar Texto
+                if (amountTxt != null)
+                {
+                    amountTxt.text = cost.amount.ToString();
+                }
             }
         }
     }
@@ -138,53 +132,55 @@ public class CardDisplay : MonoBehaviour
         }
     }
 
-    private void FillStateIcons(Transform container, List<StateData> statesList)
-    {
-        if (container == null || stateIconPrefab == null || statesList == null) return;
+   private void FillStateIcons(Transform container, List<StateData> statesList)
+{
+    if (container == null || stateIconPrefab == null || statesList == null) return;
 
-        foreach (var state in statesList)
+    // --- AGREGA ESTO: LIMPIEZA PREVIA ---
+    // Borramos los hijos que ya existan para no duplicarlos
+    foreach (Transform child in container)
+    {
+        Destroy(child.gameObject);
+    }
+    // ------------------------------------
+
+    foreach (var state in statesList)
+    {
+        if (state.icon != null)
         {
-            if (state.icon != null)
-            {
-                GameObject newIcon = Instantiate(stateIconPrefab, container);
-                // Intentamos obtener la imagen, si falla no crasheamos
-                Image iconImg = newIcon.GetComponent<Image>();
-                if (iconImg != null) iconImg.sprite = state.icon;
-            }
+            GameObject newIcon = Instantiate(stateIconPrefab, container);
+            Image iconImg = newIcon.GetComponent<Image>();
+            if (iconImg != null) iconImg.sprite = state.icon;
         }
     }
+}
 
-    // --- AQUÍ ESTABA EL ERROR (Línea 138) ---
-    // Esta versión revisa si los hijos existen antes de intentar usarlos
     private void FillEffectIndicators(Transform container, List<EffectData> effectsList, Sprite triggerIcon)
     {
         if (container == null || effectIndicatorPrefab == null || effectsList == null) return;
 
         foreach (var effect in effectsList)
         {
-            SealEffect sealEffect = effect as SealEffect;
-
+            SealEffect sealEffect = effect as SealEffect; // Asumiendo que usas SealEffect para lógica visual
+            
+            // Si quieres mostrar todos los efectos aunque no sean SealEffect, quita esta condición
+            // Pero mantengo tu lógica original aquí:
             if (sealEffect != null)
             {
                 GameObject indicator = Instantiate(effectIndicatorPrefab, container);
 
-                // SEGURIDAD: Verificamos que el prefab tenga al menos 3 hijos
                 if (indicator.transform.childCount < 3)
                 {
-                    Debug.LogError($"[CardDisplay] ERROR: El prefab 'EffectIndicator' solo tiene {indicator.transform.childCount} hijos. Necesita 3 (Trigger, Text, Seal).");
-                    continue; // Saltamos al siguiente efecto para no romper el juego
+                    // Debug.LogError($"[CardDisplay] Prefab incompleto."); // Comentado para no spamear si no es crítico
+                    continue; 
                 }
 
-                // Obtenemos los componentes de forma segura
                 var triggerImg = indicator.transform.GetChild(0).GetComponent<Image>();
                 var sealImg = indicator.transform.GetChild(1).GetComponent<Image>();
                 var amountTxt = indicator.transform.GetChild(2).GetComponent<TMP_Text>();
 
-                // Asignamos datos SOLO si el componente existe
                 if (triggerImg != null) triggerImg.sprite = triggerIcon;
-                
                 if (amountTxt != null) amountTxt.text = "x" + sealEffect.amount.ToString();
-                
                 if (sealImg != null && GameAssets.i != null) 
                     sealImg.sprite = GameAssets.i.GetElementSprite(sealEffect.sealType);
             }
@@ -194,12 +190,12 @@ public class CardDisplay : MonoBehaviour
     // --- TRIGGERS DE COMBATE ---
     public void TriggerSummon()
     {
-        ExecuteEffects(originalData.onSummonEffects);
+        if (originalData != null) ExecuteEffects(originalData.onSummonEffects);
     }
 
     public void TriggerDeath()
     {
-        ExecuteEffects(originalData.onDeathEffects);
+        if (originalData != null) ExecuteEffects(originalData.onDeathEffects);
     }
 
     private void ExecuteEffects(List<EffectData> effectsList)
@@ -209,5 +205,23 @@ public class CardDisplay : MonoBehaviour
         {
             effect.Activate(this);
         }
+    }
+
+    // --- FUNCIONES DE CONFIGURACIÓN ---
+
+    // Esta es tu función original
+    public void SetUpCard(CardData newData)
+    {
+        originalData = newData;
+        LoadCardData(); 
+        UpdateUI(); 
+    }
+
+    // --- NUEVA FUNCIÓN COMPATIBLE ---
+    // Agregamos esto para que el SpiritDeck pueda llamarla como "Setup"
+    // Sin romper nada de lo anterior.
+    public void Setup(CardData newData)
+    {
+        SetUpCard(newData);
     }
 }
