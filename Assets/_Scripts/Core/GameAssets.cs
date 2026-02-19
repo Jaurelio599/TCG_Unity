@@ -5,15 +5,18 @@ using System.Collections.Generic;
 // Definimos esto fuera de la clase para que cualquier script (como CardData) pueda usar "CostType".
 public enum CostType
 {
-    RitualMana,   // El recurso morado/oscuro para Rituales
-    SoulMana,     // El recurso etéreo para Almas
-    Level,        // Las estrellas o niveles para Espíritus
-    WaterSeal,    // Sello de Agua (Costo para Voluntad)
-    FireSeal,     // Sello de Fuego
-    EarthSeal,    // Sello de Tierra
-    WindSeal,     // Sello de Viento
-    VoidSeal,     // Sello de Vacío
-    GenericMana   // (Opcional) Por si acaso
+    RitualMana, // Maná para Rituales
+    SoulMana,   // Maná para Almas
+    // Sellos (Voluntad)
+    FireSeal,
+    WaterSeal,
+    EarthSeal,
+    WindSeal,
+    VoidSeal,
+    LightSeal,
+    DarkSeal,
+    GenericSeal,
+    Health      // Por si alguna carta cuesta vida
 }
 
 [CreateAssetMenu(menuName = "TCG/System/Game Assets Database")]

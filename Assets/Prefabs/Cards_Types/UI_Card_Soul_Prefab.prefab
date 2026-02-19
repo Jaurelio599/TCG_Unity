@@ -502,6 +502,7 @@ GameObject:
   - component: {fileID: 5914814326376505685}
   - component: {fileID: 8739736762007725890}
   - component: {fileID: 1637711483783659802}
+  - component: {fileID: 9084293065966572311}
   m_Layer: 5
   m_Name: UI_Card_Soul_Prefab
   m_TagString: Untagged
@@ -665,6 +666,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardHover
   escalaHover: 1.5
   velocidad: 20
+--- !u!114 &9084293065966572311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3114598772053508786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e7e62feba09ad749bf4e8f809ff25f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CardInteraction
 --- !u!1 &6537496405863341235
 GameObject:
   m_ObjectHideFlags: 0

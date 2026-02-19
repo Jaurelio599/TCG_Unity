@@ -502,6 +502,7 @@ GameObject:
   - component: {fileID: 7457403901458251403}
   - component: {fileID: 3641592058146138171}
   - component: {fileID: 8943228025162471200}
+  - component: {fileID: 1051845389050461029}
   m_Layer: 5
   m_Name: UI_Card_Ritual_Prefab
   m_TagString: Untagged
@@ -665,6 +666,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardHover
   escalaHover: 1.5
   velocidad: 20
+--- !u!114 &1051845389050461029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3114598772053508786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e7e62feba09ad749bf4e8f809ff25f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CardInteraction
 --- !u!1 &6537496405863341235
 GameObject:
   m_ObjectHideFlags: 0
