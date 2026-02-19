@@ -1,5 +1,40 @@
 using UnityEngine;
-using System.Collections.Generic; // Necesario para usar List<>
+using System.Collections.Generic;
+
+// NUEVO: Creamos la lista fija de Elementos para evitar errores de texto
+public enum ElementType
+{
+    None,       // Por si alguna carta no tiene elemento
+    Fire,
+    Water,
+    Earth,
+    Wind,
+    Void,
+    Light,
+    Dark,
+    Ice,        // Vi que usaste Ice en un ejemplo anterior
+    Generic
+}
+
+public enum CardType
+{
+Spirit,
+Ritual,
+Soul,
+
+Will
+
+}
+
+public enum CardArchetype
+{
+Bruma,
+OlaDeFuedo,
+Soul,
+
+Will
+
+}
 
 [CreateAssetMenu(fileName = "NewCard", menuName = "TCG/Card")]
 public class CardData : ScriptableObject
@@ -11,27 +46,37 @@ public class CardData : ScriptableObject
     public Sprite art;
 
     [Header("Base Stats")]
-    public int basePd; // Attack
-    public int basePs; // Health
+    public int basePd; 
+    public int basePs; 
 
     [Header("Types")]
-    public string type;       // Ej. "Water"
-    public string archetype;  // Ej. "Monk"
-    public string element;    // Ej. "Ice"
+    public CardType type;       
+    public string archetype;  
+    
+    // CAMBIO AQUÍ: Ahora usa la lista desplegable en lugar de texto libre
+    public ElementType element;    
 
     [Header("Cost & Requirements")]
-    // Antes era: public int cost;
-    // AHORA ES UNA LISTA:
     public List<CardCost> costs;
 
     [Header("--- PASSIVE STATES ---")]
-    [Tooltip("Estados que la carta tiene SIEMPRE mientras viva (Monje, Recuperación)")]
     public List<StateData> passiveStates; 
 
     [Header("--- INSTANT TRIGGERS ---")]
-    [Tooltip("Cosas que pasan UNA vez al entrar")]
     public List<EffectData> onSummonEffects; 
-
-    [Tooltip("Cosas que pasan UNA vez al morir")]
     public List<EffectData> onDeathEffects;
+
+    [System.Serializable]
+    public class SummonRequirement
+    {
+        public string specificCardName; 
+        public int maxLevel;
+        public string requiredArchetype;
+
+        // CAMBIO AQUÍ: Ahora pide la lista de Elementos reales
+        public List<ElementType> allowedElements; 
+    }
+
+    [Header("--- RITUAL SETTINGS ---")]
+    public SummonRequirement summonRequirement; 
 }

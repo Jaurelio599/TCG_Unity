@@ -1,11 +1,21 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems; // NUEVO: Necesario para detectar el click
+using UnityEngine.EventSystems; 
 using TMPro;
+using System.Linq; 
 
-// Agregamos la interfaz IPointerClickHandler para que detecte el click del mouse
 public class SpiritDeck : MonoBehaviour, IPointerClickHandler
 {
+    // --- SINGLETON PARA ACCESO GLOBAL ---
+    public static SpiritDeck instance;
+
+    void Awake()
+    {
+        if (instance == null) instance = this;
+        else Destroy(gameObject);
+    }
+    // -------------------------------------------
+
     [Header("Tus Espíritus (Reserva)")]
     public List<CardData> spiritList = new List<CardData>();
 
@@ -13,10 +23,10 @@ public class SpiritDeck : MonoBehaviour, IPointerClickHandler
     public GameObject visualPile; 
     public TMP_Text countText;
 
-    [Header("UI - Visualizador de Cementerio")] // NUEVO
-    public GameObject spiritWindowPanel;   // El Panel completo (con el botón X para cerrar)
-    public Transform contentContainer;     // El objeto "Content" dentro del ScrollView
-    public GameObject uiCardSpiritPrefab;  // El prefab "UI_Card_Spirit_Prefab"
+    [Header("UI - Visualizador de Cementerio")]
+    public GameObject spiritWindowPanel;   
+    public Transform contentContainer;     
+    public GameObject uiCardSpiritPrefab;  
 
     void Start()
     {
@@ -26,7 +36,6 @@ public class SpiritDeck : MonoBehaviour, IPointerClickHandler
     }
 
     // --- LÓGICA DE INTERACCIÓN (CLICK) ---
-    // Esta función se dispara sola al dar click al objeto (si tiene Raycast Target)
     public void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left)
@@ -56,15 +65,11 @@ public class SpiritDeck : MonoBehaviour, IPointerClickHandler
         foreach (CardData datosSpirit in spiritList)
         {
             GameObject nuevaCartaUI = Instantiate(uiCardSpiritPrefab, contentContainer);
-
-            // AQUÍ CONECTAMOS LOS DATOS:
-            // Asumo que tu prefab tiene un script (ej. "CardDisplay" o "SpiritCardUI")
-            // Cambia "TuScriptDeCartaUI" por el nombre real del script que tiene el prefab.
             
             var scriptDeCarta = nuevaCartaUI.GetComponent<CardDisplay>(); 
             if (scriptDeCarta != null)
             {
-                scriptDeCarta.Setup(datosSpirit); // O como se llame tu función de iniciar
+                scriptDeCarta.Setup(datosSpirit); 
             }
         }
     }
@@ -112,6 +117,103 @@ public class SpiritDeck : MonoBehaviour, IPointerClickHandler
         foreach (var s in spiritList)
         {
             Debug.Log($"- Espíritu: {s.cardName}");
+        }
+    }
+
+    // --- LA MAGIA DE BÚSQUEDA PARA RITUALES ---
+    // Esta función recibe las reglas del Ritual y devuelve los Espíritus válidos
+    public List<CardData> GetValidSpiritsForSummon(CardData.SummonRequirement req)
+    {
+        List<CardData> validSpirits = new List<CardData>();
+
+        foreach (CardData card in spiritList)
+        {
+            // Omitimos cartas que no sean espíritus
+            if (card.type.ToString() != "Spirit") continue;
+
+            // 1. Chequeo de Nombre Específico
+            if (!string.IsNullOrEmpty(req.specificCardName))
+            {
+                if (card.cardName != req.specificCardName) continue; 
+            }
+
+            // 2. CHEQUEO DE NIVEL (Leyéndolo de la lista de costos)
+            int cardLevel = 0;
+            if (card.costs != null)
+            {
+                foreach (CardCost cost in card.costs)
+                {
+                    // Comparamos el enum pasándolo a string para asegurarnos de que lo lea bien
+                    if (cost.type.ToString() == "Level") 
+                    {
+                        cardLevel = cost.amount;
+                        break; 
+                    }
+                }
+            }
+
+            // Si el ritual pide un nivel máximo (ej. maxLevel = 3) y la carta lo supera, la ignoramos
+            if (req.maxLevel > 0 && cardLevel > req.maxLevel) continue; 
+
+            // 3. Chequeo de Arquetipo
+            if (!string.IsNullOrEmpty(req.requiredArchetype))
+            {
+                if (card.archetype != req.requiredArchetype) continue;
+            }
+
+            // 4. Chequeo de Elemento
+           if (req.allowedElements != null && req.allowedElements.Count > 0)
+            {
+                bool hasValidElement = false;
+                // Ahora comparamos ElementType directo con ElementType
+                foreach (ElementType allowed in req.allowedElements)
+                {
+                    if (card.element == allowed) 
+                    {
+                        hasValidElement = true;
+                        break;
+                    }
+                }
+                if (!hasValidElement) continue; 
+            }
+
+            // Si pasa todos los filtros, lo agregamos a las opciones válidas
+            validSpirits.Add(card);
+        }
+
+        return validSpirits;
+    }
+
+
+    // --- NUEVO: FUNCIÓN PARA ELEGIR UNA CARTA ---
+    public void AbrirVentanaDeSeleccion(List<CardData> opciones, System.Action<CardData> onSelectedCallback)
+    {
+        if (spiritWindowPanel == null || contentContainer == null || uiCardSpiritPrefab == null) return;
+
+        // 1. Mostrar la ventana
+        spiritWindowPanel.SetActive(true);
+
+        // 2. Limpiar las cartas viejas
+        foreach (Transform child in contentContainer) Destroy(child.gameObject);
+
+        // 3. Crear solo las opciones válidas
+        foreach (CardData carta in opciones)
+        {
+            GameObject nuevaCartaUI = Instantiate(uiCardSpiritPrefab, contentContainer);
+            
+            var scriptDeCarta = nuevaCartaUI.GetComponent<CardDisplay>(); 
+            if (scriptDeCarta != null) scriptDeCarta.Setup(carta);
+
+            // 4. ¡LA MAGIA! Le agregamos un botón a la UI para poder darle click
+            UnityEngine.UI.Button btn = nuevaCartaUI.GetComponent<UnityEngine.UI.Button>();
+            if (btn == null) btn = nuevaCartaUI.AddComponent<UnityEngine.UI.Button>();
+
+            // 5. ¿Qué pasa al darle click?
+            btn.onClick.AddListener(() =>
+            {
+                spiritWindowPanel.SetActive(false); // Cerramos la ventana
+                onSelectedCallback(carta);          // Devolvemos la carta que elegiste
+            });
         }
     }
 }

@@ -64,13 +64,14 @@ public class CardDisplay : MonoBehaviour
         if (archetypeText) archetypeText.text = originalData.archetype;     
         if (artImage && originalData.art) artImage.sprite = originalData.art;
 
-        // 2. Icono del Elemento
+       // 2. Icono del Elemento
         if (elementIconSlot != null)
         {
             // Protegemos el acceso a GameAssets
             if (GameAssets.i != null)
             {
-                elementIconSlot.sprite = GameAssets.i.GetElementSprite(originalData.element);
+                // ¡AQUÍ ESTÁ EL ARREGLO! Solo agregamos .ToString() al final de element
+                elementIconSlot.sprite = GameAssets.i.GetElementSprite(originalData.element.ToString());
                 elementIconSlot.gameObject.SetActive(elementIconSlot.sprite != null);
             }
         }

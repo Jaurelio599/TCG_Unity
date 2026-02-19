@@ -19,12 +19,17 @@ MonoBehaviour:
   art: {fileID: 21300000, guid: 7079a31c8b50eaa40bc68b81848500a2, type: 3}
   basePd: 0
   basePs: 0
-  type: Soul
+  type: 2
   archetype: 
-  element: 
+  element: 0
   costs:
   - type: 1
     amount: 1
   passiveStates: []
   onSummonEffects: []
   onDeathEffects: []
+  summonRequirement:
+    specificCardName: 
+    maxLevel: 0
+    requiredArchetype: 
+    allowedElements: 

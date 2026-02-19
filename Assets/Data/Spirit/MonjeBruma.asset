@@ -21,14 +21,19 @@ MonoBehaviour:
   art: {fileID: 21300000, guid: 4239b35c6deb0344c9defa12d4c544c6, type: 3}
   basePd: 1000
   basePs: 1200
-  type: Spirit
+  type: 0
   archetype: Monje
-  element: Water
+  element: 2
   costs:
-  - type: 2
+  - type: 11
     amount: 1
   passiveStates:
   - {fileID: 11400000, guid: 31270b7a69dee5f4fa0c95fa5ce517dc, type: 2}
   onSummonEffects: []
   onDeathEffects:
   - {fileID: 11400000, guid: 6f7c01561910a17468290c13ebc12664, type: 2}
+  summonRequirement:
+    specificCardName: 
+    maxLevel: 0
+    requiredArchetype: 
+    allowedElements: 

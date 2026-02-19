@@ -40,6 +40,10 @@ public class GameManager : MonoBehaviour
     [Header("--- OPONENTE ---")]
     public int opponentHP = 1700;
 
+    [Header("Zona de Campo (Field Zone)")]
+    public Transform playerFieldZone;      // Arrastra aquí tu Field_Zone de la escena
+    public GameObject spiritFieldPrefab;   // Arrastra aquí tu prefab del Espíritu para el campo
+
     public event Action OnGameStateChanged;
 
     void Start()
@@ -285,5 +289,57 @@ public class GameManager : MonoBehaviour
     void UpdateUI()
     {
         OnGameStateChanged?.Invoke();
+    }
+
+   public void SummonSpiritToField(CardData spiritData)
+    {
+        if (playerFieldZone != null && spiritFieldPrefab != null)
+        {
+            // 1. Buscar un slot que esté vacío
+            Transform emptySlot = null;
+            
+            // Esto revisa a los 6 hijos (cardSlot1, cardSlot2, etc.) dentro de Field_zone
+            foreach (Transform slot in playerFieldZone)
+            {
+                // Si el slot no tiene ningún hijo adentro, significa que está libre
+                if (slot.childCount == 0) 
+                {
+                    emptySlot = slot;
+                    break; // Ya encontramos uno vacío, dejamos de buscar
+                }
+            }
+
+            // 2. Si encontramos un lugar disponible...
+            if (emptySlot != null)
+            {
+                // Instanciamos el Prefab ADENTRO del slot vacío, no en la zona general
+                GameObject newSpiritObj = Instantiate(spiritFieldPrefab, emptySlot);
+                
+                // Asegurarnos de que quede centrado exactamente en el cuadro azul
+                RectTransform rect = newSpiritObj.GetComponent<RectTransform>();
+                if (rect != null) rect.localPosition = Vector3.zero;
+                
+                // Conectar los gráficos
+                CardDisplay display = newSpiritObj.GetComponent<CardDisplay>();
+                if (display != null) display.Setup(spiritData);
+
+                // Quitarlo del SpiritDeck (cementerio)
+                SpiritDeck.instance.RemoveSpirit(spiritData);
+
+                Debug.Log($"¡{spiritData.cardName} ha sido invocado en {emptySlot.name}!");
+                UpdateUI();
+            }
+            else
+            {
+                // Si revisó los 6 slots y ninguno estaba vacío
+                Debug.LogWarning("¡Tu campo está lleno! No caben más espíritus.");
+                // Ojo: Si llega a pasar esto, ya te cobró el maná. 
+                // Luego podemos agregar un chequeo antes de pagar, pero para probar está perfecto.
+            }
+        }
+        else
+        {
+            Debug.LogError("¡Falta asignar el Field Zone o el Spirit Prefab en el GameManager!");
+        }
     }
 }

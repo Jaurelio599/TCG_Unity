@@ -18,11 +18,11 @@ MonoBehaviour:
   art: {fileID: 21300000, guid: 46396f827524dd24c9d6dd9917cdd5d6, type: 3}
   basePd: 1500
   basePs: 2000
-  type: Water
+  type: 0
   archetype: Vapor
-  element: Water
+  element: 2
   costs:
-  - type: 2
+  - type: 11
     amount: 2
   passiveStates:
   - {fileID: 11400000, guid: 31270b7a69dee5f4fa0c95fa5ce517dc, type: 2}
@@ -30,3 +30,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a4919c8eedd1c124f9b472dd4fe036f4, type: 2}
   onDeathEffects:
   - {fileID: 11400000, guid: 6f7c01561910a17468290c13ebc12664, type: 2}
+  summonRequirement:
+    specificCardName: 
+    maxLevel: 0
+    requiredArchetype: 
+    allowedElements: 

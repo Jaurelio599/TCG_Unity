@@ -18,11 +18,11 @@ MonoBehaviour:
   art: {fileID: 21300000, guid: 7caa287ac508d254e86ee8ee00617fb6, type: 3}
   basePd: 1200
   basePs: 2200
-  type: Water
+  type: 0
   archetype: Marea
-  element: Water
+  element: 2
   costs:
-  - type: 2
+  - type: 11
     amount: 2
   passiveStates:
   - {fileID: 11400000, guid: 31270b7a69dee5f4fa0c95fa5ce517dc, type: 2}
@@ -30,3 +30,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a4919c8eedd1c124f9b472dd4fe036f4, type: 2}
   onDeathEffects:
   - {fileID: 11400000, guid: a4919c8eedd1c124f9b472dd4fe036f4, type: 2}
+  summonRequirement:
+    specificCardName: 
+    maxLevel: 0
+    requiredArchetype: 
+    allowedElements: 

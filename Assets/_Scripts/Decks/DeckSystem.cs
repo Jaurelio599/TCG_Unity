@@ -41,7 +41,7 @@ public class DeckSystem : MonoBehaviour
         CardData currentData = deckList[0];
         GameObject selectedPrefab = null;
 
-        switch (currentData.type) 
+        switch (currentData.type.ToString()) 
         {
             case "Ritual": selectedPrefab = ritualPrefab; break;
             case "Soul": selectedPrefab = soulPrefab; break;

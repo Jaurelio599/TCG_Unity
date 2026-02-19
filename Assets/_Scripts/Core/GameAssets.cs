@@ -5,6 +5,7 @@ using System.Collections.Generic;
 // Definimos esto fuera de la clase para que cualquier script (como CardData) pueda usar "CostType".
 public enum CostType
 {
+  
     RitualMana, // Maná para Rituales
     SoulMana,   // Maná para Almas
     // Sellos (Voluntad)
@@ -16,7 +17,8 @@ public enum CostType
     LightSeal,
     DarkSeal,
     GenericSeal,
-    Health      // Por si alguna carta cuesta vida
+    Health,
+    Level      // Por si alguna carta cuesta vida
 }
 
 [CreateAssetMenu(menuName = "TCG/System/Game Assets Database")]

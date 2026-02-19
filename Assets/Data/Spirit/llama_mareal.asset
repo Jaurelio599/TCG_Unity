@@ -18,13 +18,18 @@ MonoBehaviour:
   art: {fileID: 21300000, guid: 3ff4ee115abab9c48ac1c52d8fe69c0d, type: 3}
   basePd: 2000
   basePs: 1500
-  type: Fire
+  type: 0
   archetype: Llama
-  element: Fire
+  element: 1
   costs:
-  - type: 2
+  - type: 11
     amount: 2
   passiveStates: []
   onSummonEffects:
   - {fileID: 11400000, guid: 6f7c01561910a17468290c13ebc12664, type: 2}
   onDeathEffects: []
+  summonRequirement:
+    specificCardName: 
+    maxLevel: 0
+    requiredArchetype: 
+    allowedElements: 

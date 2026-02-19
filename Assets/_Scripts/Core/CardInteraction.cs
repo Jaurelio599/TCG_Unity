@@ -1,5 +1,6 @@
 using UnityEngine;
-using UnityEngine.EventSystems; // Para detectar el click
+using UnityEngine.EventSystems; 
+using System.Collections.Generic;// Para detectar el click
 
 public class CardInteraction : MonoBehaviour, IPointerClickHandler
 {
@@ -24,7 +25,7 @@ public class CardInteraction : MonoBehaviour, IPointerClickHandler
         }
     }
 
-    public void TryToPlayCard()
+public void TryToPlayCard()
     {
         // 1. Verificar si es mi turno y estoy en Main Phase
         if (!GameManager.instance.isPlayerTurn || GameManager.instance.currentPhase != GamePhase.MainPhase)
@@ -33,28 +34,51 @@ public class CardInteraction : MonoBehaviour, IPointerClickHandler
             return;
         }
 
-        // 2. Verificar Costos
+        // 2. Verificar Costos y Tipos
         if (myData != null)
         {
-            // PREGUNTA AL GAMEMANAGER: ¿Me alcanza?
             if (GameManager.instance.CanPayCardCost(myData.costs))
             {
-                // COBRAR
-                GameManager.instance.PayCardCost(myData.costs);
+               // --- SI ES RITUAL ---
+                if (myData.type.ToString() == "Ritual")
+                {
+                    List<CardData> validTargets = SpiritDeck.instance.GetValidSpiritsForSummon(myData.summonRequirement);
 
-                Debug.Log($"¡Jugaste {myData.cardName} exitosamente!");
-                
-                // AQUÍ ACTIVARÍAS EL EFECTO DE LA CARTA
-                // ActivateEffect();
+                    if (validTargets.Count > 0)
+                    {
+                        GameManager.instance.PayCardCost(myData.costs); 
+                        Debug.Log($"Activando Ritual: {myData.cardName}. Elige un espíritu...");
+                        
+                        // 1. ABRIMOS LA VENTANA DE SELECCIÓN
+                        SpiritDeck.instance.AbrirVentanaDeSeleccion(validTargets, (cartaElegida) => 
+                        {
+                            // 2. ESTO OCURRE CUANDO DAS CLICK A LA CARTA EN LA UI
+                            GameManager.instance.SummonSpiritToField(cartaElegida);
+                        });
 
-                // Destruir la carta de la mano (porque ya se jugó)
-                Destroy(gameObject);
+                        Destroy(gameObject); // Destruimos la carta de ritual de la mano
+                    }
+                    else
+                    {
+                        Debug.Log("¡No hay espíritus en tu reserva que cumplan los requisitos de este ritual!");
+                    }
+                }
+                // --- SI ES OTRA CARTA (Alma, Voluntad, etc.) ---
+                else 
+                {
+                    GameManager.instance.PayCardCost(myData.costs);
+                    Debug.Log($"¡Jugaste {myData.cardName} exitosamente!");
+                    
+                    // Aquí irían los efectos de esas otras cartas...
+
+                    Destroy(gameObject);
+                }
             }
             else
             {
                 Debug.Log("¡No tienes recursos suficientes para jugar esta carta!");
-                // Aquí podrías poner un sonido de error o un parpadeo rojo
             }
         }
     }
+    
 }
