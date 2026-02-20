@@ -28,6 +28,8 @@ public class SpiritDeck : MonoBehaviour, IPointerClickHandler
     public Transform contentContainer;     
     public GameObject uiCardSpiritPrefab;  
 
+    public GameObject closeButton; // <--- ¡NUEVO! Arrastraremos aquí tu botón de la 'X'
+
     void Start()
     {
         UpdateVisuals();
@@ -46,6 +48,14 @@ public class SpiritDeck : MonoBehaviour, IPointerClickHandler
 
     void AbrirVentanaEspiritus()
     {
+
+if (spiritWindowPanel == null || contentContainer == null || uiCardSpiritPrefab == null) return;
+
+        spiritWindowPanel.SetActive(true);
+        
+        // ¡NUEVO! Si abrimos para mirar, SÍ mostramos el botón de cerrar
+        if (closeButton != null) closeButton.SetActive(true);
+
         if (spiritWindowPanel == null || contentContainer == null || uiCardSpiritPrefab == null)
         {
             Debug.LogError("Faltan asignar referencias de UI en el Inspector de SpiritDeck");
@@ -190,6 +200,13 @@ public class SpiritDeck : MonoBehaviour, IPointerClickHandler
     {
         if (spiritWindowPanel == null || contentContainer == null || uiCardSpiritPrefab == null) return;
 
+        spiritWindowPanel.SetActive(true);
+        
+        // ¡NUEVO! Si es un ritual, APAGAMOS el botón para obligarlo a elegir
+        if (closeButton != null) closeButton.SetActive(false);
+
+        if (spiritWindowPanel == null || contentContainer == null || uiCardSpiritPrefab == null) return;
+
         // 1. Mostrar la ventana
         spiritWindowPanel.SetActive(true);
 
@@ -209,10 +226,15 @@ public class SpiritDeck : MonoBehaviour, IPointerClickHandler
             if (btn == null) btn = nuevaCartaUI.AddComponent<UnityEngine.UI.Button>();
 
             // 5. ¿Qué pasa al darle click?
-            btn.onClick.AddListener(() =>
+           btn.onClick.AddListener(() =>
             {
-                spiritWindowPanel.SetActive(false); // Cerramos la ventana
-                onSelectedCallback(carta);          // Devolvemos la carta que elegiste
+                // AHORA LLAMAMOS AL PANEL DE DETALLES
+                CardDetailsManager.instance.ShowCardDetails(carta, "Invocar Espíritu", (cartaElegida) => 
+                {
+                    // ESTO ES LO QUE PASARÁ CUANDO LE DEN CLICK AL BOTÓN "INVOCAR ESPÍRITU"
+                    spiritWindowPanel.SetActive(false); // Cerramos la ventana de espíritus
+                    onSelectedCallback(cartaElegida);   // Avisamos que ya la eligieron para invocar
+                });
             });
         }
     }

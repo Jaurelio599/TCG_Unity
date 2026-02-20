@@ -29,9 +29,10 @@ MonoBehaviour:
     amount: 1
   passiveStates:
   - {fileID: 11400000, guid: 31270b7a69dee5f4fa0c95fa5ce517dc, type: 2}
-  onSummonEffects: []
-  onDeathEffects:
+  onSummonEffects:
   - {fileID: 11400000, guid: 6f7c01561910a17468290c13ebc12664, type: 2}
+  onDeathEffects:
+  - {fileID: 11400000, guid: a4919c8eedd1c124f9b472dd4fe036f4, type: 2}
   summonRequirement:
     specificCardName: 
     maxLevel: 0

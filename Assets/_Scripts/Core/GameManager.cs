@@ -291,7 +291,7 @@ public class GameManager : MonoBehaviour
         OnGameStateChanged?.Invoke();
     }
 
-   public void SummonSpiritToField(CardData spiritData)
+  public void SummonSpiritToField(CardData spiritData)
     {
         if (playerFieldZone != null && spiritFieldPrefab != null)
         {
@@ -319,9 +319,15 @@ public class GameManager : MonoBehaviour
                 RectTransform rect = newSpiritObj.GetComponent<RectTransform>();
                 if (rect != null) rect.localPosition = Vector3.zero;
                 
-                // Conectar los gráficos
+                // --- AQUÍ ESTÁ EL CAMBIO ---
+                // Conectar los gráficos y disparar los efectos de invocación
                 CardDisplay display = newSpiritObj.GetComponent<CardDisplay>();
-                if (display != null) display.Setup(spiritData);
+                if (display != null) 
+                {
+                    display.Setup(spiritData);
+                    display.TriggerSummon(); // <--- ¡AQUÍ ESTÁ LA LÍNEA NUEVA!
+                }
+                // ---------------------------
 
                 // Quitarlo del SpiritDeck (cementerio)
                 SpiritDeck.instance.RemoveSpirit(spiritData);

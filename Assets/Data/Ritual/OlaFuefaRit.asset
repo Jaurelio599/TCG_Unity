@@ -23,12 +23,12 @@ MonoBehaviour:
   element: 0
   costs:
   - type: 0
-    amount: 2
+    amount: 0
   passiveStates: []
   onSummonEffects: []
   onDeathEffects: []
   summonRequirement:
     specificCardName: 
-    maxLevel: 2
+    maxLevel: 3
     requiredArchetype: 
     allowedElements: 01000000

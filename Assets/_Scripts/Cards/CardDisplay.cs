@@ -182,8 +182,9 @@ public class CardDisplay : MonoBehaviour
 
                 if (triggerImg != null) triggerImg.sprite = triggerIcon;
                 if (amountTxt != null) amountTxt.text = "x" + sealEffect.amount.ToString();
-                if (sealImg != null && GameAssets.i != null) 
-                    sealImg.sprite = GameAssets.i.GetElementSprite(sealEffect.sealType);
+              // Le quitamos la palabra "Seal" (ej. "WaterSeal" -> "Water") para que busque bien la imagen
+        if (sealImg != null && GameAssets.i != null) 
+            sealImg.sprite = GameAssets.i.GetElementSprite(sealEffect.sealType.ToString().Replace("Seal", ""));
             }
         }
     }
