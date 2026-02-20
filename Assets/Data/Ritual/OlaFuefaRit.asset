@@ -23,7 +23,7 @@ MonoBehaviour:
   element: 0
   costs:
   - type: 0
-    amount: 0
+    amount: 1
   passiveStates: []
   onSummonEffects: []
   onDeathEffects: []

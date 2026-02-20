@@ -17,11 +17,39 @@ public class CardInteraction : MonoBehaviour, IPointerClickHandler
     }
 
     // Detectar Click Derecho para "Jugar" la carta
-    public void OnPointerClick(PointerEventData eventData)
+ public void OnPointerClick(PointerEventData eventData)
     {
+        // CLICK DERECHO = ABRIR MENÚ DE ACCIÓN
         if (eventData.button == PointerEventData.InputButton.Right)
         {
-            TryToPlayCard();
+            List<MenuOption> opciones = new List<MenuOption>();
+
+            // 1. Calcular si el jugador puede pagar
+            bool canPay = GameManager.instance.CanPayCardCost(myData.costs);
+            bool isValidRitual = true;
+
+            // 2. Si es ritual, calcular si hay algo que invocar
+            if (myData.type.ToString() == "Ritual")
+            {
+                isValidRitual = SpiritDeck.instance.GetValidSpiritsForSummon(myData.summonRequirement).Count > 0;
+            }
+
+            // 3. Es tu turno y fase principal?
+            bool isCorrectPhase = GameManager.instance.isPlayerTurn && GameManager.instance.currentPhase == GamePhase.MainPhase;
+
+            // ¿El botón debe estar encendido? (Debe cumplir todo)
+            bool canActivate = canPay && isValidRitual && isCorrectPhase;
+
+            // 4. Crear el botón de "Activar"
+            opciones.Add(new MenuOption
+            {
+                buttonText = "Activar",
+                isInteractable = canActivate,
+                onClickAction = () => { TryToPlayCard(); } // Si le dan click, ejecuta tu función de siempre
+            });
+
+            // Mostramos el menú con esta lista de opciones
+            ActionMenuManager.instance.ShowMenu(opciones);
         }
     }
 
